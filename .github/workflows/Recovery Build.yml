@@ -143,26 +143,28 @@ jobs:
       uses: pierotofy/set-swap-space@master
       with:
         swap-size-gb: 12
-#     - name: Start SSH via Ngrok
-#       # if: ${{ failure() }}
-#       run: |
-#           curl -sL https://gist.github.com/qwqlemon2333/1c9a4e04cf7fd3bd5b95a2e56b682d08/raw/48d8fa681e3c0cfe697fa65cf395e391f3d8ecfb/debug-github-actions.sh | bash
-#       env:
-#           # After sign up on the https://ngrok.com/
-#           # You can find this token here: https://dashboard.ngrok.com/get-started/setup
-#           NGROK_TOKEN: ${{ secrets.NGROK_TOKEN }}
-#           # This password you will use when authorizing via SSH
-#           USER_PASS: ${{ secrets.USER_PASS }}
-# # sb
-        
-#     - name: sleep for 20 mins
-#       run: sleep 2h
+
     - name: Building recovery
       run: |
         source build/envsetup.sh
         export ALLOW_MISSING_DEPENDENCIES=true
         lunch ${{ github.event.inputs.MAKEFILE_NAME }}-eng && make clean && make ${{ github.event.inputs.BUILD_TARGET }}image -j$(nproc --all)
       working-directory: ${{ steps.pwd.outputs.workspace-folder }}
+
+    - name: Start SSH via Ngrok
+      # if: ${{ failure() }}
+      run: |
+          curl -sL https://gist.github.com/qwqlemon2333/1c9a4e04cf7fd3bd5b95a2e56b682d08/raw/48d8fa681e3c0cfe697fa65cf395e391f3d8ecfb/debug-github-actions.sh | bash
+      env:
+          # After sign up on the https://ngrok.com/
+          # You can find this token here: https://dashboard.ngrok.com/get-started/setup
+          NGROK_TOKEN: ${{ secrets.NGROK_TOKEN }}
+          # This password you will use when authorizing via SSH
+          USER_PASS: ${{ secrets.USER_PASS }}
+# sb
+        
+    - name: sleep for 20 mins
+      run: sleep 2h
       
     - name: Upload to Release
       uses: softprops/action-gh-release@v0.1.15
